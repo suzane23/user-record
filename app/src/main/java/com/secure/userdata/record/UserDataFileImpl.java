@@ -23,7 +23,7 @@ public class UserDataFileImpl extends UserDataBaseImpl {
         }
     }
 
-    public UserRecord fetchRecord(String line) {
+    private UserRecord fetchRecord(String line) {
         try {
             JSONObject jsonObject = new JSONObject(line);
             UserRecord record = new UserRecord();
@@ -66,13 +66,13 @@ return 0;
     @Override
     List<UserRecord> getAllRecords() {
         List<UserRecord> userRecordList = new ArrayList<>();
-        UserRecord record;
+
         try {
             FileInputStream fileInputStream = new FileInputStream("./Records.db");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line = bufferedReader.readLine();
             while (line!=null){
-                record = fetchRecord(line);
+                UserRecord record = fetchRecord(line);
                 userRecordList.add(record);
                 line = bufferedReader.readLine();
             }
