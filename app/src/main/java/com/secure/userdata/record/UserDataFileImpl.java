@@ -54,8 +54,8 @@ public class UserDataFileImpl extends UserDataBaseImpl {
     }
 
     @Override
-    void deleteRecordByName(String name) {
-
+    int deleteRecordByName(String name) {
+return 0;
     }
 
     @Override
@@ -65,6 +65,26 @@ public class UserDataFileImpl extends UserDataBaseImpl {
 
     @Override
     List<UserRecord> getAllRecords() {
-        return null;
+        List<UserRecord> userRecordList = new ArrayList<>();
+        UserRecord record;
+        try {
+            FileInputStream fileInputStream = new FileInputStream("./Records.db");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+            String line = bufferedReader.readLine();
+            while (line!=null){
+                record = fetchRecord(line);
+                userRecordList.add(record);
+                line = bufferedReader.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userRecordList;
     }
+
+    @Override
+    int getRecordsCount() {
+        return 0;
+    }
+
 }

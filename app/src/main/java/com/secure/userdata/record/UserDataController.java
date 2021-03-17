@@ -6,10 +6,6 @@ import java.util.List;
 
 public class UserDataController implements IUserDataCallBack{
     private IUserData userData;
-    public UserDataController(Context context) {
-        userData = RecordFactory.getInstance(RecordFactory.RecordStorageType.FILE);
-        userData.init(context);
-    }
 
     public UserDataController(Context context, RecordFactory.RecordStorageType recordStorageType){
         userData = RecordFactory.getInstance(recordStorageType);
@@ -20,8 +16,20 @@ public class UserDataController implements IUserDataCallBack{
         userData.addRecord(record, this);
     }
 
-    public void getallRecords() {
-        userData.getAllRecords(this);
+    public void getAllRecords() {
+        int requestID = userData.getAllRecords(this);
+        System.out.println("getAllRecords requestID = " + requestID);
+    }
+    public void deleteRecord(String name) {
+        userData.deleteRecordByName(name, this);
+    }
+
+    public void getRecordsByName(String name){
+        userData.getRecordByName(name, this);
+    }
+
+    public void getRecordsCount() {
+        userData.getCount(this);
     }
 
     @Override
@@ -30,17 +38,28 @@ public class UserDataController implements IUserDataCallBack{
     }
 
     @Override
-    public void getAllRecordsResult(List<UserRecord> list) {
-        System.out.println("getAllRecordsResult " + list );
+    public void onGetAllRecordsResult(List<UserRecord> list, int requestID) {
+        System.out.println("onGetAllRecordsResult " + list );
+
+        System.out.println("onGetAllRecordsResult requestID = " + requestID);
     }
 
     @Override
-    public void onDeleteRecordResult() {
+    public void onDeleteRecordResult(int result) {
+        System.out.println("onDeleteRecordResult " + result );
 
+    }
+
+    @Override
+    public void onGetRecordsCount(int count) {
+        System.out.println("onGetRecordsCount "  + count );
     }
 
     @Override
     public void onGetRecordsByNameResult(List<UserRecord> list) {
-
+        System.out.println("onGetRecordsByNameResult " );
+        for (UserRecord record: list ) {
+            System.out.println(record);
+        }
     }
 }

@@ -11,12 +11,11 @@ public class UserGetRecordsByName extends UserBaseRequest {
         this.searchName = searchName;
     }
 
-    @Override
-    public IUserDataCallBack getCallback() {
-        return null;
-    }
-
     public String getSearchName() {
         return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
     }
 }

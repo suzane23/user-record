@@ -6,10 +6,12 @@ public interface IUserRequest {
     public enum RequestType {
         REQUEST_ADD,
         REQUEST_DELETE,
-        REQUEST_GET,
-        REQUEST_GET_ALL
+        REQUEST_GET_BY_NAME,
+        REQUEST_GET_ALL,
+        REQUEST_GET_COUNT
     }
 
-    public RequestType getRequestType();
-    public IUserDataCallBack getCallback();
+    int getRequestID();
+    RequestType getRequestType();
+    IUserDataCallBack getCallback();
 }
