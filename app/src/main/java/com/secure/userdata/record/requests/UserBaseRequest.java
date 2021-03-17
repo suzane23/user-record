@@ -6,18 +6,18 @@ import java.util.Random;
 
 public abstract class UserBaseRequest implements IUserRequest {
 
-    private int requestID;
+    private Long requestID;
     private RequestType requestType;
     private IUserDataCallBack callBack;
 
     public UserBaseRequest(RequestType requestType, IUserDataCallBack callBack) {
-        requestID = new Random().nextInt();
+        requestID = System.nanoTime();
         this.requestType = requestType;
         this.callBack = callBack;
     }
 
     @Override
-    public int getRequestID() {
+    public Long getRequestID() {
         return requestID;
     }
 

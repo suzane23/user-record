@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         UserRecord record8 = new UserRecord("Shuchika");
         UserRecord record9 = new UserRecord("Ruchika");
 
-//        controller.add(record);
+        controller.add(record);
 //        controller.add(record1);
 //        controller.add(record2);
 //        controller.add(record3);
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
 //        controller.add(record8);
 //        controller.add(record9);
 //        controller.getAllRecords();
-       controller.deleteRecord("Yudhi");
+//       controller.deleteRecord("Yudhi");
 //        controller.getRecordsByName("Avika");
-        controller.getRecordsCount();
+//        controller.getRecordsCount();
     }
 }

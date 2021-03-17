@@ -44,7 +44,7 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
                     UserAddRecordRequest addRecordRequest = (UserAddRecordRequest)userRequest;
                     addRecordTo(addRecordRequest.getUserRecord());
 
-                    addRecordRequest.getCallback().onAddRecordResult(true, addRecordRequest.getUserRecord().id);
+                    addRecordRequest.getCallback().onAddRecordResult(addRecordRequest ,true, addRecordRequest.getUserRecord().id);
 
                 }
                 else if(userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_DELETE) {
@@ -62,7 +62,7 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
                 else if(userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_GET_ALL) {
 
                     List<UserRecord> list = getAllRecords();
-                    userRequest.getCallback().onGetAllRecordsResult(list, userRequest.getRequestID());
+                    userRequest.getCallback().onGetAllRecordsResult(list);
                 }
                 else if (userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_GET_COUNT) {
 
@@ -84,15 +84,15 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
     abstract int getRecordsCount();
 
     @Override
-    public int addRecord(UserRecord record, IUserDataCallBack callBack) {
+    public IUserRequest addRecord(UserRecord record, IUserDataCallBack callBack) {
         System.out.println("addRecord ++");
 
-        UserAddRecordRequest addRecordRequest = new UserAddRecordRequest(IUserRequest.RequestType.REQUEST_ADD, record, callBack);
-        queue.add(addRecordRequest);
+        IUserRequest request = new UserAddRecordRequest(IUserRequest.RequestType.REQUEST_ADD, record, callBack);
+        queue.add(request);
 
         System.out.println("addRecord --");
 
-        return new Random().nextInt();
+        return request;
     }
 
     @Override
@@ -119,7 +119,7 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
         queue.add(getAllRecordsRequest);
 
         System.out.println("getAllRecords --");
-        return getAllRecordsRequest.getRequestID();
+        return new Random().nextInt();
     }
 
     @Override
@@ -143,5 +143,10 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
         System.out.println("deleteRecordByName --");
 
 
+    }
+
+    @Override
+    public void cancelRequest(IUserRequest userRequest) {
+        queue.remove(userRequest);
     }
 }

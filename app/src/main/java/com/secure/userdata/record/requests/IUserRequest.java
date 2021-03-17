@@ -11,7 +11,7 @@ public interface IUserRequest {
         REQUEST_GET_COUNT
     }
 
-    int getRequestID();
+    Long getRequestID();
     RequestType getRequestType();
     IUserDataCallBack getCallback();
 }

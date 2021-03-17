@@ -2,10 +2,15 @@ package com.secure.userdata.record;
 
 import android.content.Context;
 
+import com.secure.userdata.record.requests.IUserRequest;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserDataController implements IUserDataCallBack{
     private IUserData userData;
+
+    private List<IUserRequest> requestList = new LinkedList<>();
 
     public UserDataController(Context context, RecordFactory.RecordStorageType recordStorageType){
         userData = RecordFactory.getInstance(recordStorageType);
@@ -13,7 +18,9 @@ public class UserDataController implements IUserDataCallBack{
     }
 
     public void add(UserRecord record ) {
-        userData.addRecord(record, this);
+        IUserRequest userRequest = userData.addRecord(record, this);
+
+        requestList.add(userRequest);
     }
 
     public void getAllRecords() {
@@ -33,15 +40,18 @@ public class UserDataController implements IUserDataCallBack{
     }
 
     @Override
-    public void onAddRecordResult(Boolean result, String recordID) {
+    public void onAddRecordResult(IUserRequest userRequest, Boolean result, String recordID) {
         System.out.println("onAddRecordResult result = " + result + ", recordID = " + recordID);
+
+        boolean contains = requestList.contains(userRequest);
+        System.out.println("contains = " + contains);
     }
 
     @Override
-    public void onGetAllRecordsResult(List<UserRecord> list, int requestID) {
+    public void onGetAllRecordsResult(List<UserRecord> list) {
         System.out.println("onGetAllRecordsResult " + list );
 
-        System.out.println("onGetAllRecordsResult requestID = " + requestID);
+        System.out.println("onGetAllRecordsResult");
     }
 
     @Override
