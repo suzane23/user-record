@@ -2,22 +2,22 @@ package com.secure.userdata.record.requests;
 
 import com.secure.userdata.record.IUserDataCallBack;
 
-import java.util.Random;
-
 public abstract class UserBaseRequest implements IUserRequest {
 
-    private int requestID;
+    private Long requestID;
     private RequestType requestType;
     private IUserDataCallBack callBack;
 
+    private IUserResponse userResponse;
+
     public UserBaseRequest(RequestType requestType, IUserDataCallBack callBack) {
-        requestID = new Random().nextInt();
+        requestID = System.nanoTime();
         this.requestType = requestType;
         this.callBack = callBack;
     }
 
     @Override
-    public int getRequestID() {
+    public Long getRequestID() {
         return requestID;
     }
 
@@ -29,5 +29,20 @@ public abstract class UserBaseRequest implements IUserRequest {
     @Override
     public IUserDataCallBack getCallback() {
         return callBack;
+    }
+
+    @Override
+    public void setResponse(IUserResponse userResponse) {
+        this.userResponse = userResponse;
+    }
+
+    @Override
+    public IUserResponse getResponse() {
+        return userResponse;
+    }
+
+    @Override
+    public void onComplete() {
+        callBack.onResponse(this);
     }
 }

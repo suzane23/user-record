@@ -4,7 +4,15 @@ import android.content.Context;
 
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +31,7 @@ public class UserDataFileImpl extends UserDataBaseImpl {
         }
     }
 
-    public UserRecord fetchRecord(String line) {
+    private UserRecord fetchRecord(String line) {
         try {
             JSONObject jsonObject = new JSONObject(line);
             UserRecord record = new UserRecord();
@@ -47,6 +55,7 @@ public class UserDataFileImpl extends UserDataBaseImpl {
             writer.close();
             fileOutputStream.flush();
             fileOutputStream.close();
+            System.out.println("Add record : " + record.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,13 +75,13 @@ return 0;
     @Override
     List<UserRecord> getAllRecords() {
         List<UserRecord> userRecordList = new ArrayList<>();
-        UserRecord record;
+
         try {
             FileInputStream fileInputStream = new FileInputStream("./Records.db");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line = bufferedReader.readLine();
             while (line!=null){
-                record = fetchRecord(line);
+                UserRecord record = fetchRecord(line);
                 userRecordList.add(record);
                 line = bufferedReader.readLine();
             }
