@@ -1,13 +1,12 @@
 package com.secure.userdata;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-import com.secure.userdata.record.IUserData;
 import com.secure.userdata.record.RecordFactory;
 import com.secure.userdata.record.UserDataController;
 import com.secure.userdata.record.UserRecord;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         UserDataController controller = new UserDataController(this, RecordFactory.RecordStorageType.NETWORKDB);
-       UserRecord record = new UserRecord("Shuchika");
+       UserRecord record = new UserRecord("Basooli Bhai");
         UserRecord record1 = new UserRecord("Yudhi");
         UserRecord record2 = new UserRecord("Abhimanyu");
         UserRecord record3 = new UserRecord("Anika");
@@ -38,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
 //        controller.add(record7);
 //        controller.add(record8);
 //        controller.add(record9);
-//        controller.getAllRecords();
-       controller.deleteRecord("Yudhi");
+        controller.getAllRecords();
+//       controller.deleteRecord("Shuchika");
 //        controller.getRecordsByName("Avika");
         controller.getRecordsCount();
     }
