@@ -2,7 +2,6 @@ package com.secure.userdata.record;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 public class UserRecord {

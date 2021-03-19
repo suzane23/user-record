@@ -3,23 +3,22 @@ package com.secure.userdata.record;
 import android.content.Context;
 
 import com.secure.userdata.record.requests.IUserRequest;
+import com.secure.userdata.record.requests.IUserResponse;
 import com.secure.userdata.record.requests.UserAddRecordRequest;
+import com.secure.userdata.record.requests.UserAddRecordResponse;
 import com.secure.userdata.record.requests.UserDeleteRecordByNameRequest;
+import com.secure.userdata.record.requests.UserDeleteRecordByNameResponse;
 import com.secure.userdata.record.requests.UserGetAllRecordsRequest;
-import com.secure.userdata.record.requests.UserGetRecordsByName;
+import com.secure.userdata.record.requests.UserGetAllRecordsResponse;
+import com.secure.userdata.record.requests.UserGetRecordsByNameRequest;
+import com.secure.userdata.record.requests.UserGetRecordsByNameResponse;
 import com.secure.userdata.record.requests.UserGetRecordsCountRequest;
+import com.secure.userdata.record.requests.UserGetRecordsCountResponse;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class UserDataBaseImpl implements IUserData, Runnable{
-
-    public class AddRecordItem {
-        UserRecord record;
-        IUserDataCallBack callBack;
-    }
-
 
     private LinkedBlockingQueue<IUserRequest> queue = null;
     private Thread thread = null;
@@ -40,35 +39,54 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
             try {
                 userRequest = queue.take();
 
-                if(userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_ADD) {
-                    UserAddRecordRequest addRecordRequest = (UserAddRecordRequest)userRequest;
-                    addRecordTo(addRecordRequest.getUserRecord());
+                IUserResponse userResponse = null;
 
-                    addRecordRequest.getCallback().onAddRecordResult(addRecordRequest ,true, addRecordRequest.getUserRecord().id);
+                switch (userRequest.getRequestType()) {
+                    case REQUEST_ADD: {
+                        UserAddRecordRequest addRecordRequest = (UserAddRecordRequest)userRequest;
+                        addRecordTo(addRecordRequest.getUserRecord());
 
+                        userResponse = new UserAddRecordResponse(true);
+                        addRecordRequest.setResponse(userResponse);
+                    }
+                    break;
+
+                    case REQUEST_DELETE: {
+                        UserDeleteRecordByNameRequest deleteRecordByNameRequest = (UserDeleteRecordByNameRequest)userRequest;
+                        int result = deleteRecordByName(deleteRecordByNameRequest.getDeletedName());
+
+                        userResponse = new UserDeleteRecordByNameResponse(true, result);
+                        deleteRecordByNameRequest.setResponse(userResponse);
+                    }
+                    break;
+
+                    case REQUEST_GET_BY_NAME: {
+                        UserGetRecordsByNameRequest getRecordsByNameRequest = (UserGetRecordsByNameRequest)userRequest;
+                        List<UserRecord> list = getRecordsByName(getRecordsByNameRequest.getSearchName());
+
+                        userResponse = new UserGetRecordsByNameResponse(true, list);
+                        getRecordsByNameRequest.setResponse(userResponse);
+                    }
+                    break;
+
+                    case REQUEST_GET_ALL: {
+                        List<UserRecord> list = getAllRecords();
+                        userResponse = new UserGetAllRecordsResponse(true, list);
+                        userRequest.setResponse(userResponse);
+                    }
+                    break;
+
+                    case REQUEST_GET_COUNT: {
+                        int count = getRecordsCount();
+                        userResponse = new UserGetRecordsCountResponse(true, count);
+                        userRequest.setResponse(userResponse);
+                    }
+                    break;
+
+                    default:
                 }
-                else if(userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_DELETE) {
-                    UserDeleteRecordByNameRequest deleteRecordByNameRequest = (UserDeleteRecordByNameRequest)userRequest;
-                    int result = deleteRecordByName(deleteRecordByNameRequest.getDeletedName());
 
-                    deleteRecordByNameRequest.getCallback().onDeleteRecordResult(result);
-                }
-                else if(userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_GET_BY_NAME) {
-                    UserGetRecordsByName getRecordsByName = (UserGetRecordsByName)userRequest;
-                    List<UserRecord> list = getRecordsByName(getRecordsByName.getSearchName());
-
-                    getRecordsByName.getCallback().onGetRecordsByNameResult(list);
-                }
-                else if(userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_GET_ALL) {
-
-                    List<UserRecord> list = getAllRecords();
-                    userRequest.getCallback().onGetAllRecordsResult(list);
-                }
-                else if (userRequest.getRequestType() == IUserRequest.RequestType.REQUEST_GET_COUNT) {
-
-                    int count = getRecordsCount();
-                    userRequest.getCallback().onGetRecordsCount(count);
-                }
+                userRequest.onComplete();
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
@@ -96,13 +114,15 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
     }
 
     @Override
-    public void getRecordByName(String name, IUserDataCallBack callBack) {
+    public IUserRequest getRecordByName(String name, IUserDataCallBack callBack) {
         System.out.println("getRecordByName ++");
 
-        UserGetRecordsByName getRecordsByName = new UserGetRecordsByName(IUserRequest.RequestType.REQUEST_GET_BY_NAME, callBack, name);
-        queue.add(getRecordsByName);
+        IUserRequest request = new UserGetRecordsByNameRequest(IUserRequest.RequestType.REQUEST_GET_BY_NAME, callBack, name);
+        queue.add(request);
 
         System.out.println("getRecordByName --");
+
+        return  request;
 
     }
 
@@ -112,41 +132,49 @@ public abstract class UserDataBaseImpl implements IUserData, Runnable{
     }
 
     @Override
-    public int getAllRecords(IUserDataCallBack callBack) {
+    public IUserRequest getAllRecords(IUserDataCallBack callBack) {
         System.out.println("getAllRecords ++");
 
-        UserGetAllRecordsRequest getAllRecordsRequest = new UserGetAllRecordsRequest(IUserRequest.RequestType.REQUEST_GET_ALL, callBack);
-        queue.add(getAllRecordsRequest);
+        IUserRequest request = new UserGetAllRecordsRequest(IUserRequest.RequestType.REQUEST_GET_ALL, callBack);
+        queue.add(request);
 
         System.out.println("getAllRecords --");
-        return new Random().nextInt();
+        return request;
     }
 
     @Override
-    public void getCount(IUserDataCallBack callBack) {
+    public IUserRequest getCount(IUserDataCallBack callBack) {
         System.out.println("getCount ++");
 
-        UserGetRecordsCountRequest countRequest = new UserGetRecordsCountRequest(IUserRequest.RequestType.REQUEST_GET_COUNT, callBack);
-        queue.add(countRequest);
+        IUserRequest request = new UserGetRecordsCountRequest(IUserRequest.RequestType.REQUEST_GET_COUNT, callBack);
+        queue.add(request);
 
         System.out.println("getCount --");
+        return  request;
 
     }
 
     @Override
-    public void deleteRecordByName(String name, IUserDataCallBack callBack) {
+    public IUserRequest deleteRecordByName(String name, IUserDataCallBack callBack) {
         System.out.println("deleteRecordByName ++");
 
-        UserDeleteRecordByNameRequest deleteRecordByNameRequest = new UserDeleteRecordByNameRequest(IUserRequest.RequestType.REQUEST_DELETE, callBack, name);
-        queue.add(deleteRecordByNameRequest);
+        IUserRequest request = new UserDeleteRecordByNameRequest(IUserRequest.RequestType.REQUEST_DELETE, callBack, name);
+        queue.add(request);
 
         System.out.println("deleteRecordByName --");
+        return  request;
 
 
     }
 
     @Override
     public void cancelRequest(IUserRequest userRequest) {
-        queue.remove(userRequest);
+
+        if(null != userRequest) {
+            queue.remove(userRequest);
+        }
+        else {
+            queue.clear();
+        }
     }
 }

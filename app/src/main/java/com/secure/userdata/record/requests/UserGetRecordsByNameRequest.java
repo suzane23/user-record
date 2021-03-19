@@ -2,11 +2,11 @@ package com.secure.userdata.record.requests;
 
 import com.secure.userdata.record.IUserDataCallBack;
 
-public class UserGetRecordsByName extends UserBaseRequest {
+public class UserGetRecordsByNameRequest extends UserBaseRequest {
 
     private String searchName;
 
-    public UserGetRecordsByName(RequestType requestType, IUserDataCallBack callBack, String searchName) {
+    public UserGetRecordsByNameRequest(RequestType requestType, IUserDataCallBack callBack, String searchName) {
         super(requestType, callBack);
         this.searchName = searchName;
     }

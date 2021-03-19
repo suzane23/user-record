@@ -27,6 +27,7 @@ public class UserDataLocalDBImpl extends UserDataBaseImpl{
         values.put(SQLiteWrapper.KEY_NAME , record.name);
         values.put(SQLiteWrapper.KEY_TIME , record.time);
         db.insert(SQLiteWrapper.TABLE_RECORDS,null, values);
+        System.out.println("Add record : " + record.toString());
         db.close();
 
     }
