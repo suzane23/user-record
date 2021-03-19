@@ -15,6 +15,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        Integer n1 = 150;
+        Integer n2 = 150;
+        if(n1.equals(n2)){
+            System.out.println("both numbers are equal");
+        } else {
+            System.out.println("both numbers are not equal");
+        }
+
         UserDataController controller = new UserDataController(this, RecordFactory.RecordStorageType.NETWORKDB);
        UserRecord record = new UserRecord("Basooli Bhai");
         UserRecord record1 = new UserRecord("Yudhi");

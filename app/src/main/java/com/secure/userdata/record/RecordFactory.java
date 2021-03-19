@@ -9,7 +9,7 @@ public class RecordFactory {
 
     public static IUserData getInstance(RecordStorageType recordStorageType){
         if(recordStorageType == RecordStorageType.LOCALDB) {
-            return new UserDataLocalDBImpl();
+            return UserDataLocalDBImpl.getInstance();
         }
         else if(recordStorageType == RecordStorageType.FILE) {
             return new UserDataFileImpl();
