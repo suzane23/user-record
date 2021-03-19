@@ -10,7 +10,22 @@ import java.util.List;
 
 public class UserDataLocalDBImpl extends UserDataBaseImpl{
 
-    SQLiteWrapper sqLiteWrapper = null;
+    private SQLiteWrapper sqLiteWrapper = null;
+
+    private static IUserData instance;
+
+    private UserDataLocalDBImpl() {
+
+    }
+
+    synchronized public static IUserData getInstance(){
+
+        if(null == instance){
+            instance = new UserDataLocalDBImpl();
+        }
+
+        return instance;
+    }
 
 
     @Override

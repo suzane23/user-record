@@ -8,7 +8,6 @@ import com.secure.userdata.record.requests.UserDeleteRecordByNameRequest;
 import com.secure.userdata.record.requests.UserDeleteRecordByNameResponse;
 import com.secure.userdata.record.requests.UserGetAllRecordsResponse;
 import com.secure.userdata.record.requests.UserGetRecordsByNameResponse;
-import com.secure.userdata.record.requests.UserGetRecordsCountRequest;
 import com.secure.userdata.record.requests.UserGetRecordsCountResponse;
 
 import java.util.ArrayList;
@@ -73,7 +72,6 @@ public class UserDataController implements IUserDataCallBack{
                 for (UserRecord rec: list) {
                     System.out.println(rec);
                 }
-//                System.out.println(response.getRecordList());
             }
             break;
             case REQUEST_GET_BY_NAME:{
