@@ -1,11 +1,7 @@
 package com.secure.userdata.record;
 
-import java.util.List;
+import com.secure.userdata.record.requests.IUserRequest;
 
 public interface IUserDataCallBack {
-
-    void onAddRecordResult(Boolean result, String recordID);
-    void onDeleteRecordResult();
-    void onGetRecordsByNameResult(List<UserRecord> list);
-    void getAllRecordsResult(List<UserRecord> list);
+    void onResponse(IUserRequest userRequest);
 }
